@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home</title>
+  </head>
+  <body>
+    <h1>Livros</h1>
+    <a href="/">home</a>
+    <form action="/pesquisar" method="get">
+      <h1>Pesquisar</h1>
+      <label>
+        Título
+        <input type="text" name="titulo" />
+      </label>
+      <label>
+        Autor
+        <input type="text" name="autor" />
+      </label>
+      <label>
+        Gênero
+        <input type="text" name="genero" />
+      </label>
+      <button type="submit">Pesquisar</button>
+    </form>
+    <ul>
+      {% for id, titulo, autor, genero, disponivel in livros %}
+      <li>{{titulo}}</li>
+      <form action="/remover-livro/{{id}}" method="post">
+        <button type="submit">remover</button>
+      </form>
+      <form action="/editar-livro/{{id}}" method="post">
+        <h2>Editar livro</h2>
+        <label>
+          Título
+          <input type="text" value="{{titulo}}" name="titulo" />
+        </label>
+        <label>
+          Autor
+          <input type="text" value="{{autor}}" name="autor" />
+        </label>
+        <label>
+          Gênero
+          <input type="text" value="{{genero}}" name="genero" />
+        </label>
+        <button type="submit">Editar</button>
+      </form>
+      {% endfor %}
+    </ul>
+    <form action="/adicionar-livro" method="post">
+      <h2>Adicionar livro</h2>
+      <label>
+        Título
+        <input type="text" name="titulo" />
+      </label>
+      <label>
+        Autor
+        <input type="text" name="autor" />
+      </label>
+      <label>
+        Gênero
+        <input type="text" name="genero" />
+      </label>
+      <button type="submit">Adicionar</button>
+    </form>
+  </body>
+</html>
