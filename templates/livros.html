@@ -1,68 +1,171 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Home</title>
-  </head>
-  <body>
-    <h1>Livros</h1>
-    <a href="/">home</a>
-    <form action="/pesquisar" method="get">
-      <h1>Pesquisar</h1>
-      <label>
-        Título
-        <input type="text" name="titulo" />
-      </label>
-      <label>
-        Autor
-        <input type="text" name="autor" />
-      </label>
-      <label>
-        Gênero
-        <input type="text" name="genero" />
-      </label>
-      <button type="submit">Pesquisar</button>
-    </form>
-    <ul>
-      {% for id, titulo, autor, genero, disponivel in livros %}
-      <li>{{titulo}}</li>
-      <form action="/remover-livro/{{id}}" method="post">
-        <button type="submit">remover</button>
-      </form>
-      <form action="/editar-livro/{{id}}" method="post">
-        <h2>Editar livro</h2>
-        <label>
-          Título
-          <input type="text" value="{{titulo}}" name="titulo" />
-        </label>
-        <label>
-          Autor
-          <input type="text" value="{{autor}}" name="autor" />
-        </label>
-        <label>
-          Gênero
-          <input type="text" value="{{genero}}" name="genero" />
-        </label>
-        <button type="submit">Editar</button>
-      </form>
-      {% endfor %}
-    </ul>
-    <form action="/adicionar-livro" method="post">
-      <h2>Adicionar livro</h2>
-      <label>
-        Título
-        <input type="text" name="titulo" />
-      </label>
-      <label>
-        Autor
-        <input type="text" name="autor" />
-      </label>
-      <label>
-        Gênero
-        <input type="text" name="genero" />
-      </label>
-      <button type="submit">Adicionar</button>
-    </form>
-  </body>
-</html>
+{% extends 'layout.html' %}
+
+{% block title %}Livros{% endblock %}
+
+{% block body %}
+  <h1>Biblioteca</h1>
+  <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modal-pesquisar">Pesquisar</button>
+  <div class="modal fade" id="modal-pesquisar">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Pesquisar livro</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form action="/pesquisar" method="get">
+            <div class="mb-1">
+              <label class="form-label">
+                Título
+                <input class="form-control" class="form-control" type="text" name="titulo" />
+              </label>
+            </div>
+            <div class="mb-1">
+              <label class="form-label">
+                Autor
+                <input class="form-control" type="text" name="autor" />
+              </label>
+            </div>
+            <div class="mb-1">
+              <label class="form-label">
+                Gênero
+                <input class="form-control" type="text" name="genero" />
+              </label>
+            </div>
+            <button type="submit" class="btn btn-outline-primary">Pesquisar</button>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Fechar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <button class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#modal-adicionar">Adicionar livro</button>
+  <div class="modal fade" id="modal-adicionar">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Adicionar livro</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form action="/adicionar-livro" method="post">
+            <div class="mb-1">
+              <label class="form-label">
+                Título
+                <input class="form-control" required type="text" name="titulo" />
+              </label>
+            </div>
+            <div class="mb-1">
+              <label class="form-label">
+                Autor
+                <input class="form-control" required type="text" name="autor" />
+              </label>
+            </div>
+            <div class="mb-1">
+              <label class="form-label">
+                Gênero
+                <input class="form-control" required type="text" name="genero" />
+              </label>
+            </div>
+            <button class="btn btn-outline-success" type="submit">Adicionar</button>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Fechar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <button class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#modal-editar">Editar</button>
+  <div class="modal fade" id="modal-editar">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Editar livro</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form action="/editar-livro" method="post">
+            <div class="mb-1">
+              <label class="form-label">
+                ID
+                <input class="form-control" class="form-control" type="text" name="id" required />
+              </label>
+            </div>
+            <div class="mb-1">
+              <label class="form-label">
+                Título
+                <input class="form-control" class="form-control" type="text" name="titulo" />
+              </label>
+            </div>
+            <div class="mb-1">
+              <label class="form-label">
+                Autor
+                <input class="form-control" type="text" name="autor" />
+              </label>
+            </div>
+            <div class="mb-1">
+              <label class="form-label">
+                Gênero
+                <input class="form-control" type="text" name="genero" />
+              </label>
+            </div>
+            <button type="submit" class="btn btn-outline-secondary">Editar</button>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Fechar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <button class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#modal-remover">Remover</button>
+  <div class="modal fade" id="modal-remover">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Remover livro</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form action="/remover-livro" method="post">
+            <div class="mb-1">
+              <label class="form-label">
+                ID
+                <input class="form-control" required type="text" name="id" />
+              </label>
+            </div>
+            <button class="btn btn-outline-danger" type="submit">Remover</button>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Fechar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <table class="table table-striped">
+    <thead>
+      <th>ID</th>
+      <th>Título</th>
+      <th>Autor</th>
+      <th>Gênero</th>
+    </thead>
+    <tbody>
+    {% for id, titulo, autor, genero in livros %}
+      <tr>
+        <td>{{id}}</td>
+        <td>{{titulo}}</td>
+        <td>{{autor}}</td>
+        <td>{{genero}}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}

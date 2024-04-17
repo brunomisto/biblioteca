@@ -19,8 +19,7 @@ class Biblioteca:
                 id INTEGER PRIMARY KEY,
                 titulo TEXT,
                 autor TEXT,
-                genero TEXT,
-                disponivel BOOLEAN
+                genero TEXT
             )
         ''')
         connection.commit()
@@ -30,7 +29,7 @@ class Biblioteca:
         connection = sqlite3.connect('biblioteca.db')
         cursor = connection.cursor()
         cursor.execute('''
-            SELECT * FROM livros WHERE disponivel = 1
+            SELECT * FROM livros
         ''')
         livros = cursor.fetchall()
         connection.close()
@@ -40,7 +39,7 @@ class Biblioteca:
         connection = sqlite3.connect('biblioteca.db')
         cursor = connection.cursor()
         cursor.execute('''
-            INSERT INTO livros (titulo, autor, genero, disponivel) VALUES (?, ?, ?, 1)
+            INSERT INTO livros (titulo, autor, genero) VALUES (?, ?, ?)
         ''', (livro.titulo, livro.autor, livro.genero))
         connection.commit()
         connection.close()
@@ -102,8 +101,6 @@ class Biblioteca:
         if (len(params) == 0):
             connection.close()
             return self.exibir_livros()
-        
-        updates.append('disponivel = 1')
 
         query += 'AND '.join(updates)
 
@@ -111,21 +108,12 @@ class Biblioteca:
         livros = cursor.fetchall()
         connection.close()
         return livros
-        connection = sqlite3.connect('biblioteca.db')
-        cursor = connection.cursor()
-        cursor.execute("UPDATE livros SET disponivel 1 WHERE id = ?", (id))
-        connection.commit()
-        connection.close()
 
 biblioteca = Biblioteca()
 
 app = Flask(__name__)
 
 @app.route('/')
-def index():
-    return render_template('index.html')
-
-@app.route('/livros')
 def livros():
     livros = biblioteca.exibir_livros()
     return render_template('livros.html', livros=livros)
@@ -138,13 +126,19 @@ def adicionar_livro():
     biblioteca.adicionar_livro(Livro(titulo, autor, genero))
     return redirect(url_for('livros'))
 
-@app.route('/remover-livro/<id>', methods=['POST'])
-def remover_livro(id):
+@app.route('/remover-livro', methods=['POST'])
+def remover_livro():
+    id = request.form['id']
+    if not id:
+        return redirect(url_for('livros'))
     biblioteca.remover_livro(id)
     return redirect(url_for('livros'))
 
-@app.route('/editar-livro/<id>', methods=['POST'])
-def editar_livro(id):
+@app.route('/editar-livro', methods=['POST'])
+def editar_livro():
+    id = request.form['id']
+    if not id:
+        return redirect(url_for('livros'))
     titulo = request.form['titulo']
     autor = request.form['autor']
     genero = request.form['genero']
