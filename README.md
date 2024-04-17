@@ -1,3 +1,11 @@
 # Sistema de biblioteca
 
-CRUD feito para administrar livros, com pesquisa por atributos e empréstimos e devoluções.
+Aplicação web em Flask feita para administrar livros
+
+## Instalação
+
+`pip install -r requirements.txt`
+
+## Inicialização
+
+`python -m flask run`
